@@ -64,6 +64,18 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
       this.setState(({pickSelectedCounter}) => ({pickSelectedCounter: pickSelectedCounter + 1}))
     }
 
+    // Desktop only start.
+
+    _triggerUpArrowCounter = () => {
+      this.setState(({upArrowCounter}) => ({upArrowCounter: upArrowCounter + 1}))
+    }
+
+    _triggerDownArrowCounter = () => {
+      this.setState(({downArrowCounter}) => ({downArrowCounter: downArrowCounter + 1}))
+    }
+
+    // Desktop only end.
+
     insertMention = (u: string, options?: {notUser: boolean}) => {
       this._replaceWordAtCursor(`@${u} `)
       this._setMentionPopupOpen(false)
@@ -96,14 +108,6 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
 
     switchChannelMention = (c: string) => {
       this._replaceWordAtCursor(`#${c}`)
-    }
-
-    _triggerUpArrowCounter = () => {
-      this.setState(({upArrowCounter}) => ({upArrowCounter: upArrowCounter + 1}))
-    }
-
-    _triggerDownArrowCounter = () => {
-      this.setState(({downArrowCounter}) => ({downArrowCounter: downArrowCounter + 1}))
     }
 
     onKeyDown = (e: SyntheticKeyboardEvent<>) => {

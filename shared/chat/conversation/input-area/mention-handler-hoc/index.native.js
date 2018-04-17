@@ -59,6 +59,18 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
       this.setState(({pickSelectedCounter}) => ({pickSelectedCounter: pickSelectedCounter + 1}))
     }
 
+    // Mobile only start.
+
+    onSelectionChange = (selection: {selectionStart: number, selectionEnd: number}) =>
+      this.setState(
+        {
+          _selection: selection,
+        },
+        () => this.onChangeText(this.props.text)
+      )
+
+    // Mobile only end.
+
     // TODO: Needed?
     onEnterKeyDown = (e: SyntheticKeyboardEvent<>) => {
       e.preventDefault()
@@ -157,14 +169,6 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
         }
       }
     }
-
-    onSelectionChange = (selection: {selectionStart: number, selectionEnd: number}) =>
-      this.setState(
-        {
-          _selection: selection,
-        },
-        () => this.onChangeText(this.props.text)
-      )
 
     render = () => (
       <InputComponent
