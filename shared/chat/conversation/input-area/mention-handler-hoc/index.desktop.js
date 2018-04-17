@@ -3,30 +3,46 @@ import * as React from 'react'
 import {type Props} from '../normal'
 import {type PropsFromContainer} from '.'
 import {Input} from '../../../../common-adapters'
+
+// Desktop only.
 import logger from '../../../../logger'
 
 type MentionHocState = {
-  upArrowCounter: number,
-  downArrowCounter: number,
   pickSelectedCounter: number,
   mentionFilter: string,
   channelMentionFilter: string,
   mentionPopupOpen: boolean,
   channelMentionPopupOpen: boolean,
+
+  // Desktop only.
+  upArrowCounter: number,
+  downArrowCounter: number,
 }
 
 const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
   class MentionHoc extends React.Component<PropsFromContainer, MentionHocState> {
-    state: MentionHocState = {
-      upArrowCounter: 0,
-      downArrowCounter: 0,
-      pickSelectedCounter: 0,
-      mentionFilter: '',
-      channelMentionFilter: '',
-      mentionPopupOpen: false,
-      channelMentionPopupOpen: false,
-    }
+    state: MentionHocState
     _inputRef: ?Input
+
+    constructor(props: PropsFromContainer) {
+      super(props)
+      this.state = {
+        pickSelectedCounter: 0,
+        mentionFilter: '',
+        channelMentionFilter: '',
+        mentionPopupOpen: false,
+        channelMentionPopupOpen: false,
+
+        // Desktop only.
+        upArrowCounter: 0,
+        downArrowCounter: 0,
+      }
+    }
+
+    inputSetRef = (input: Input) => {
+      this.props._inputSetRef(input)
+      this._inputRef = input
+    }
 
     _setMentionPopupOpen = (mentionPopupOpen: boolean) => {
       this.setState({mentionPopupOpen})
@@ -44,9 +60,8 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
       this.setState({channelMentionFilter})
     }
 
-    inputSetRef = (input: Input) => {
-      this.props._inputSetRef(input)
-      this._inputRef = input
+    _triggerPickSelectedCounter = () => {
+      this.setState(({pickSelectedCounter}) => ({pickSelectedCounter: pickSelectedCounter + 1}))
     }
 
     insertMention = (u: string, options?: {notUser: boolean}) => {
@@ -89,10 +104,6 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
 
     _triggerDownArrowCounter = () => {
       this.setState(({downArrowCounter}) => ({downArrowCounter: downArrowCounter + 1}))
-    }
-
-    _triggerPickSelectedCounter = () => {
-      this.setState(({pickSelectedCounter}) => ({pickSelectedCounter: pickSelectedCounter + 1}))
     }
 
     onKeyDown = (e: SyntheticKeyboardEvent<>) => {

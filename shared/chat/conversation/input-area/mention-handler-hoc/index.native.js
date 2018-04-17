@@ -10,6 +10,8 @@ type MentionHocState = {
   channelMentionFilter: string,
   mentionPopupOpen: boolean,
   channelMentionPopupOpen: boolean,
+
+  // Mobile only.
   _selection: {selectionStart: number, selectionEnd: number},
 }
 
@@ -17,14 +19,17 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
   class MentionHoc extends React.Component<PropsFromContainer, MentionHocState> {
     state: MentionHocState
     _inputRef: ?Input
-    constructor() {
-      super()
+
+    constructor(props: PropsFromContainer) {
+      super(props)
       this.state = {
         pickSelectedCounter: 0,
         mentionFilter: '',
         channelMentionFilter: '',
         mentionPopupOpen: false,
         channelMentionPopupOpen: false,
+
+        // Mobile only.
         _selection: {selectionStart: 0, selectionEnd: 0},
       }
     }
@@ -34,15 +39,27 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
       this._inputRef = input
     }
 
-    setMentionPopupOpen = (mentionPopupOpen: boolean) => this.setState({mentionPopupOpen})
-    setChannelMentionPopupOpen = (channelMentionPopupOpen: boolean) =>
+    _setMentionPopupOpen = (mentionPopupOpen: boolean) => {
+      this.setState({mentionPopupOpen})
+    }
+
+    _setChannelMentionPopupOpen = (channelMentionPopupOpen: boolean) => {
       this.setState({channelMentionPopupOpen})
-    _setMentionFilter = (mentionFilter: string) => this.setState({mentionFilter})
-    _setChannelMentionFilter = (channelMentionFilter: string) => this.setState({channelMentionFilter})
+    }
 
-    _triggerPickSelectedCounter = () =>
+    _setMentionFilter = (mentionFilter: string) => {
+      this.setState({mentionFilter})
+    }
+
+    _setChannelMentionFilter = (channelMentionFilter: string) => {
+      this.setState({channelMentionFilter})
+    }
+
+    _triggerPickSelectedCounter = () => {
       this.setState(({pickSelectedCounter}) => ({pickSelectedCounter: pickSelectedCounter + 1}))
+    }
 
+    // TODO: Needed?
     onEnterKeyDown = (e: SyntheticKeyboardEvent<>) => {
       e.preventDefault()
       if (this.state.mentionPopupOpen || this.state.channelMentionPopupOpen) {
@@ -65,26 +82,26 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
       const selection = this.state._selection
       if (!this._isPopupOpen() && selection.selectionStart === selection.selectionEnd) {
         if (word[0] === '@') {
-          this.setMentionPopupOpen(true)
+          this._setMentionPopupOpen(true)
           this._setMentionFilter(word.substring(1))
         } else if (word[0] === '#') {
-          this.setChannelMentionPopupOpen(true)
+          this._setChannelMentionPopupOpen(true)
           this._setChannelMentionFilter(word.substring(1))
         }
       } else if (selection.selectionStart !== selection.selectionEnd) {
-        this.state.mentionPopupOpen && this.setMentionPopupOpen(false) && this._setMentionFilter('')
+        this.state.mentionPopupOpen && this._setMentionPopupOpen(false) && this._setMentionFilter('')
         this.state.channelMentionPopupOpen &&
-          this.setChannelMentionPopupOpen(false) &&
+          this._setChannelMentionPopupOpen(false) &&
           this._setChannelMentionFilter('')
       } else {
         // Close popups if word doesn't begin with marker anymore
         if (this.state.mentionPopupOpen && word[0] !== '@') {
           this._setMentionFilter('')
-          this.setMentionPopupOpen(false)
+          this._setMentionPopupOpen(false)
           return
         } else if (this.state.channelMentionPopupOpen && word[0] !== '#') {
           this._setChannelMentionFilter('')
-          this.setChannelMentionPopupOpen(false)
+          this._setChannelMentionPopupOpen(false)
           return
         }
 
@@ -98,8 +115,8 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
     }
 
     onBlur = () => {
-      this.state.channelMentionPopupOpen && this.setChannelMentionPopupOpen(false)
-      this.state.mentionPopupOpen && this.setMentionPopupOpen(false)
+      this.state.channelMentionPopupOpen && this._setChannelMentionPopupOpen(false)
+      this.state.mentionPopupOpen && this._setMentionPopupOpen(false)
     }
 
     onFocus = () => {
@@ -155,8 +172,8 @@ const mentionHoc = (InputComponent: React.ComponentType<Props>) => {
         {...this.state}
         insertChannelMention={this.insertChannelMention}
         insertMention={this.insertMention}
-        setMentionPopupOpen={this.setMentionPopupOpen}
-        setChannelMentionPopupOpen={this.setChannelMentionPopupOpen}
+        setMentionPopupOpen={this._setMentionPopupOpen}
+        setChannelMentionPopupOpen={this._setChannelMentionPopupOpen}
         inputSetRef={this.inputSetRef}
         insertMentionMarker={this.insertMentionMarker}
         onBlur={this.onBlur}
