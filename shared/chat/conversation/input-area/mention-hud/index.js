@@ -17,9 +17,9 @@ type State<RowProps> = {|
   filter: string,
   selectedIndex: number,
 
+  visibleList: Array<RowProps>,
+  indexToVisibleIndex: Array<number>,
   visibleIndexToIndex: Array<number>,
-  filteredList: Array<RowProps>,
-  selectedVisibleIndex: number,
 |}
 
 class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowProps>> {
@@ -30,9 +30,9 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       filter: '',
       selectedIndex: 0,
 
+      visibleList: [],
+      indexToVisibleIndex: [],
       visibleIndexToIndex: [],
-      filteredList: [],
-      selectedVisibleIndex: 0,
     }
   }
 
@@ -40,29 +40,22 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     nextProps: Props<RowProps>,
     prevState: State<RowProps>
   ): null | State<RowProps> => {
-    let {visibleIndexToIndex, filteredList, selectedVisibleIndex} = prevState
+    let {visibleList, indexToVisibleIndex, visibleIndexToIndex} = prevState
     if (prevState.initial || nextProps.filter !== prevState.filter) {
+      visibleList = []
+      indexToVisibleIndex = []
       visibleIndexToIndex = []
-      filteredList = []
-      selectedVisibleIndex = 0
       for (let i = 0; i < nextProps.rowPropsList.length; i++) {
         const rowProps = nextProps.rowPropsList[i]
         const show = nextProps.rowFilterer(rowProps, nextProps.filter)
         if (show) {
+          visibleList.push(rowProps)
           visibleIndexToIndex.push(i)
-          filteredList.push(rowProps)
-          if (i <= nextProps.selectedIndex) {
-            selectedVisibleIndex = filteredList.length - 1
-          }
         }
+        indexToVisibleIndex.push(Math.max(0, visibleList.length - 1))
       }
     } else if (nextProps.selectedIndex !== prevState.selectedIndex) {
-      selectedVisibleIndex = 0
-      for (let i = 0; i < filteredList.length; i++) {
-        if (visibleIndexToIndex[i] <= nextProps.selectedIndex) {
-          selectedVisibleIndex = i
-        }
-      }
+      // Fall through.
     } else {
       // Nothing changed.
       return null
@@ -73,21 +66,22 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       filter: nextProps.filter,
       selectedIndex: nextProps.selectedIndex,
 
+      visibleList,
+      indexToVisibleIndex,
       visibleIndexToIndex,
-      filteredList,
-      selectedVisibleIndex,
     }
   }
 
   render = () => {
-    const {visibleIndexToIndex, filteredList, selectedVisibleIndex} = this.state
+    const {visibleList, indexToVisibleIndex, visibleIndexToIndex} = this.state
+    const selectedVisibleIndex = indexToVisibleIndex[this.props.selectedIndex]
 
     return (
       <List
-        items={filteredList}
+        items={visibleList}
         renderItem={(visibleIndex: number, rowProps: RowProps) => {
           const index = visibleIndexToIndex[visibleIndex]
-          return this.props.rowRenderer(index, visibleIndex === this.state.selectedVisibleIndex, rowProps)
+          return this.props.rowRenderer(index, visibleIndex === selectedVisibleIndex, rowProps)
         }}
         selectedIndex={selectedVisibleIndex}
         fixedHeight={40}
