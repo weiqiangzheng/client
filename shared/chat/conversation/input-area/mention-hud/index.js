@@ -7,14 +7,16 @@ type Props<Item> = {|
   data: Array<Item>,
   selectedIndex: number,
   style?: StylesCrossPlatform,
-  rowRenderer: (index: number, item: Item) => React.Node,
+  rowRenderer: (index: number, selected: boolean, item: Item) => React.Node,
 |}
 
 const MentionHud = <Item>(props: Props<Item>) =>
   props.data.length ? (
     <List
       items={props.data}
-      renderItem={props.rowRenderer}
+      renderItem={(index: number, item: Item) =>
+        props.rowRenderer(index, index === props.selectedIndex, item)
+      }
       selectedIndex={props.selectedIndex}
       fixedHeight={40}
       keyboardShouldPersistTaps="always"

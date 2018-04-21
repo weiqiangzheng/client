@@ -5,8 +5,14 @@ import {Box, Text} from '../../../../common-adapters'
 import {storiesOf} from '../../../../stories/storybook'
 import {globalMargins} from '../../../../styles'
 
-const Row = (props: {index: number, data: string}) => (
-  <Box style={{border: '1px solid black', paddingLeft: globalMargins.tiny}}>
+const Row = (props: {index: number, selected: boolean, data: string}) => (
+  <Box
+    style={{
+      border: '1px solid black',
+      paddingLeft: globalMargins.tiny,
+      backgroundColor: props.selected ? 'grey' : 'white',
+    }}
+  >
     <Text type="Body">
       {props.index}: {props.data}
     </Text>
@@ -17,7 +23,7 @@ const load = () => {
   storiesOf('Chat/Mention Hud', module).add('Basic', () => (
     <MentionHud
       data={['some data', 'some other data', 'third data']}
-      rowRenderer={(index, item) => <Row index={index} data={item} />}
+      rowRenderer={(index, selected, item) => <Row index={index} selected={selected} data={item} />}
       selectedIndex={0}
       style={{height: 300, width: 240}}
     />
