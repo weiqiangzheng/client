@@ -13,22 +13,29 @@ type Props<RowProps> = {|
 |}
 
 const MentionHud = <RowProps>(props: Props<RowProps>) => {
-  const rowPropsList = props.rowPropsList.filter(rowProps => props.rowFilterer(rowProps, props.filter))
-  if (rowPropsList.length === 0) {
-    return null
+  const visibleIndexToIndex = []
+  const filteredList = []
+  let selectedVisibleIndex = 0
+  for (let i = 0; i < props.rowPropsList.length; i++) {
+    const rowProps = props.rowPropsList[i]
+    const show = props.rowFilterer(rowProps, props.filter)
+    if (show) {
+      visibleIndexToIndex.push(i)
+      filteredList.push(rowProps)
+      if (i <= props.selectedIndex) {
+        selectedVisibleIndex = filteredList.length - 1
+      }
+    }
   }
 
   return (
     <List
-      items={rowPropsList}
-      renderItem={(index: number, rowProps: RowProps) => {
-        let selectedIndex = props.selectedIndex % rowPropsList.length
-        if (selectedIndex < 0) {
-          selectedIndex += rowPropsList.length
-        }
-        return props.rowRenderer(index, index === selectedIndex, rowProps)
+      items={filteredList}
+      renderItem={(visibleIndex: number, rowProps: RowProps) => {
+        const index = visibleIndexToIndex[visibleIndex]
+        return props.rowRenderer(index, visibleIndex === selectedVisibleIndex, rowProps)
       }}
-      selectedIndex={props.selectedIndex}
+      selectedIndex={selectedVisibleIndex}
       fixedHeight={40}
       keyboardShouldPersistTaps="always"
       style={props.style}
