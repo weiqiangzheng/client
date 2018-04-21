@@ -21,9 +21,13 @@ const MentionHud = <RowData, RowProps>(props: Props<RowData, RowProps>) => {
   return (
     <List
       items={rowPropList}
-      renderItem={(index: number, rowProps: RowProps) =>
-        props.rowRenderer(index, index === props.selectedIndex, rowProps)
-      }
+      renderItem={(index: number, rowProps: RowProps) => {
+        let selectedIndex = props.selectedIndex % rowPropList.length
+        if (selectedIndex < 0) {
+          selectedIndex += rowPropList.length
+        }
+        return props.rowRenderer(index, index === selectedIndex, rowProps)
+      }}
       selectedIndex={props.selectedIndex}
       fixedHeight={40}
       keyboardShouldPersistTaps="always"
