@@ -4,23 +4,23 @@ import {List} from '../../../../common-adapters/index'
 import {type StylesCrossPlatform} from '../../../../styles'
 
 type Props<RowData, RowProps> = {|
-  data: Array<RowData>,
+  rowDataList: Array<RowData>,
   filter: string,
-  rowFilterer: (data: Array<RowData>, filter: string) => Array<RowProps>,
+  rowFilterer: (rowDataList: Array<RowData>, filter: string) => Array<RowProps>,
   selectedIndex: number,
   style?: StylesCrossPlatform,
   rowRenderer: (index: number, selected: boolean, rowProps: RowProps) => React.Node,
 |}
 
 const MentionHud = <RowData, RowProps>(props: Props<RowData, RowProps>) => {
-  const filtered = props.rowFilterer(props.data, props.filter)
-  if (filtered.length === 0) {
+  const rowPropList = props.rowFilterer(props.rowDataList, props.filter)
+  if (rowPropList.length === 0) {
     return null
   }
 
   return (
     <List
-      items={filtered}
+      items={rowPropList}
       renderItem={(index: number, rowProps: RowProps) =>
         props.rowRenderer(index, index === props.selectedIndex, rowProps)
       }
