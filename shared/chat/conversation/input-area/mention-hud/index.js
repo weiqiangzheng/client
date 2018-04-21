@@ -23,7 +23,7 @@ const MentionHud = <Item>(props: Props<Item>) =>
   ) : null
 
 const hudStyle = {
-  ...globalStyles.flexBoxRow,
+  ...globalStyles.flexBoxColumn,
   backgroundColor: globalColors.white,
 }
 
