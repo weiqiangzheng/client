@@ -37,6 +37,9 @@ class List extends PureComponent<Props<*>, void> {
         {/* need windowSize so iphone 6 doesn't have OOM issues */}
         <View style={globalStyles.fillAbsolute}>
           <FlatList
+            // Make sure the list gets re-rendered whenever the selected
+            // index changes.
+            extraData={this.props.selectedIndex}
             renderItem={this._itemRender}
             data={this.props.items}
             getItemLayout={this.props.fixedHeight ? this._getItemLayout : undefined}
