@@ -12,36 +12,82 @@ type Props<RowProps> = {|
   rowRenderer: (index: number, selected: boolean, rowProps: RowProps) => React.Node,
 |}
 
-class MentionHud<RowProps> extends React.Component<Props<RowProps>> {
-  render = () => {
-    const props = this.props
+type State<RowProps> = {|
+  filter: string,
+  selectedIndex: number,
 
-    const visibleIndexToIndex = []
-    const filteredList = []
-    let selectedVisibleIndex = 0
-    for (let i = 0; i < props.rowPropsList.length; i++) {
-      const rowProps = props.rowPropsList[i]
-      const show = props.rowFilterer(rowProps, props.filter)
-      if (show) {
-        visibleIndexToIndex.push(i)
-        filteredList.push(rowProps)
-        if (i <= props.selectedIndex) {
-          selectedVisibleIndex = filteredList.length - 1
+  visibleIndexToIndex: Array<number>,
+  filteredList: Array<RowProps>,
+  selectedVisibleIndex: number,
+|}
+
+class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowProps>> {
+  constructor(props: Props<RowProps>) {
+    super(props)
+    this.state = {
+      filter: '',
+      selectedIndex: 0,
+
+      visibleIndexToIndex: [],
+      filteredList: [],
+      selectedVisibleIndex: 0,
+    }
+  }
+
+  static getDerivedStateFromProps = (
+    nextProps: Props<RowProps>,
+    prevState: State<RowProps>
+  ): null | State<RowProps> => {
+    let {visibleIndexToIndex, filteredList, selectedVisibleIndex} = prevState
+    if (nextProps.filter !== prevState.filter) {
+      selectedVisibleIndex = 0
+      for (let i = 0; i < nextProps.rowPropsList.length; i++) {
+        const rowProps = nextProps.rowPropsList[i]
+        const show = nextProps.rowFilterer(rowProps, nextProps.filter)
+        if (show) {
+          visibleIndexToIndex.push(i)
+          filteredList.push(rowProps)
+          if (i <= nextProps.selectedIndex) {
+            selectedVisibleIndex = filteredList.length - 1
+          }
         }
       }
+    } else if (nextProps.selectedIndex !== prevState.selectedIndex) {
+      selectedVisibleIndex = 0
+      for (let i = 0; i < filteredList.length; i++) {
+        if (visibleIndexToIndex[i] <= nextProps.selectedIndex) {
+          selectedVisibleIndex = i
+        }
+      }
+    } else {
+      // Nothing changed.
+      return null
     }
+
+    return {
+      filter: nextProps.filter,
+      selectedIndex: nextProps.selectedIndex,
+
+      visibleIndexToIndex,
+      filteredList,
+      selectedVisibleIndex,
+    }
+  }
+
+  render = () => {
+    const {visibleIndexToIndex, filteredList, selectedVisibleIndex} = this.state
 
     return (
       <List
         items={filteredList}
         renderItem={(visibleIndex: number, rowProps: RowProps) => {
           const index = visibleIndexToIndex[visibleIndex]
-          return props.rowRenderer(index, visibleIndex === selectedVisibleIndex, rowProps)
+          return this.props.rowRenderer(index, visibleIndex === this.state.selectedVisibleIndex, rowProps)
         }}
         selectedIndex={selectedVisibleIndex}
         fixedHeight={40}
         keyboardShouldPersistTaps="always"
-        style={props.style}
+        style={this.props.style}
       />
     )
   }
