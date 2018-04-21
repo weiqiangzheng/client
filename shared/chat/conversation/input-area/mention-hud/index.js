@@ -6,7 +6,7 @@ import {globalColors, globalStyles, collapseStyles, type StylesCrossPlatform} fr
 type Props<Item> = {|
   data: Array<Item>,
   selectedIndex: number,
-  style: StylesCrossPlatform,
+  style?: StylesCrossPlatform,
   rowRenderer: (index: number, item: Item) => React.Node,
 |}
 

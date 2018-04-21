@@ -6,9 +6,11 @@ import {storiesOf} from '../../../../stories/storybook'
 import {globalMargins, globalStyles} from '../../../../styles'
 
 const Row = (props: {index: number, data: string}) => (
-  <Text type="BodySmall" style={{marginLeft: globalMargins.tiny}}>
-    {props.index}: {props.data}
-  </Text>
+  <Box style={{backgroundColor: 'green', border: '1px solid black', paddingLeft: globalMargins.tiny}}>
+    <Text type="Body" style={{backgroundColor: 'white'}}>
+      {props.index}: {props.data}
+    </Text>
+  </Box>
 )
 
 const load = () => {
