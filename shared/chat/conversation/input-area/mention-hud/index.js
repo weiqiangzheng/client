@@ -29,6 +29,7 @@ type State<RowProps> = {|
   visibleList: Array<RowProps>,
   indexToVisibleIndex: Array<number>,
   visibleIndexToIndex: Array<number>,
+  selectedVisibleIndex: number,
 |}
 
 class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowProps>> {
@@ -44,6 +45,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       visibleList: [],
       indexToVisibleIndex: [],
       visibleIndexToIndex: [],
+      selectedVisibleIndex: 0,
     }
   }
 
@@ -51,7 +53,8 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     nextProps: Props<RowProps>,
     prevState: State<RowProps>
   ): null | State<RowProps> => {
-    let {visibleList, indexToVisibleIndex, visibleIndexToIndex} = prevState
+    let {visibleList, indexToVisibleIndex, visibleIndexToIndex, selectedVisibleIndex} = prevState
+    let {selectedIndex} = nextProps
     if (prevState.initial || nextProps.filter !== prevState.filter) {
       visibleList = []
       indexToVisibleIndex = []
@@ -65,8 +68,17 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
         }
         indexToVisibleIndex.push(Math.max(0, visibleList.length - 1))
       }
-    } else if (nextProps.selectedIndex !== prevState.selectedIndex) {
-      // Fall through.
+      selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
+    } else if (selectedIndex !== prevState.selectedIndex) {
+      selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
+    } else if (nextProps.selectVisibleUpToggle !== prevState.selectVisibleUpToggle) {
+      if (visibleList.length > 0) {
+        selectedVisibleIndex = (selectedVisibleIndex + (visibleList.length - 1)) % visibleList.length
+      }
+    } else if (nextProps.selectVisibleDownToggle !== prevState.selectVisibleDownToggle) {
+      if (visibleList.length > 0) {
+        selectedVisibleIndex = (selectedVisibleIndex + 1) % visibleList.length
+      }
     } else {
       // Nothing changed.
       return null
@@ -75,19 +87,19 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     return {
       initial: false,
       filter: nextProps.filter,
-      selectedIndex: nextProps.selectedIndex,
+      selectedIndex,
       selectVisibleUpToggle: nextProps.selectVisibleUpToggle,
       selectVisibleDownToggle: nextProps.selectVisibleDownToggle,
 
       visibleList,
       indexToVisibleIndex,
       visibleIndexToIndex,
+      selectedVisibleIndex,
     }
   }
 
   render = () => {
-    const {visibleList, indexToVisibleIndex, visibleIndexToIndex} = this.state
-    const selectedVisibleIndex = indexToVisibleIndex[this.props.selectedIndex]
+    const {visibleList, visibleIndexToIndex, selectedVisibleIndex} = this.state
 
     return (
       <List
