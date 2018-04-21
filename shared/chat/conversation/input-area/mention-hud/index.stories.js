@@ -22,20 +22,27 @@ const Row = (props: {index: number, selected: boolean, data: string, onClick: ()
 type State = {
   filter: string,
   selectedIndex: number,
+  selectVisibleUpToggle: boolean,
+  selectVisibleDownToggle: boolean,
 }
 
 class MentionHudContainer extends React.Component<{}, State> {
   constructor(props) {
     super(props)
-    this.state = {filter: '', selectedIndex: 0}
+    this.state = {
+      filter: '',
+      selectedIndex: 0,
+      selectVisibleUpToggle: false,
+      selectVisibleDownToggle: false,
+    }
   }
 
-  _selectUp = () => {
-    this.setState(({selectedIndex}) => ({selectedIndex: selectedIndex - 1}))
+  _selectVisibleUp = () => {
+    this.setState(({selectVisibleUpToggle}) => ({selectVisibleUpToggle: !selectVisibleUpToggle}))
   }
 
-  _selectDown = () => {
-    this.setState(({selectedIndex}) => ({selectedIndex: selectedIndex + 1}))
+  _selectVisibleDown = () => {
+    this.setState(({selectVisibleDownToggle}) => ({selectVisibleDownToggle: !selectVisibleDownToggle}))
   }
 
   _setFilter = (filter: string) => {
@@ -51,7 +58,6 @@ class MentionHudContainer extends React.Component<{}, State> {
       <Box style={{...globalStyles.flexBoxColumn, height: 400, width: 240}}>
         <MentionHud
           rowPropsList={['some data', 'some other data', 'third data']}
-          filter={this.state.filter}
           rowFilterer={(data, filter) => data.indexOf(filter) >= 0}
           rowRenderer={(index, selected, data) => (
             <Row
@@ -62,12 +68,15 @@ class MentionHudContainer extends React.Component<{}, State> {
               data={data}
             />
           )}
+          filter={this.state.filter}
           selectedIndex={this.state.selectedIndex}
+          selectVisibleUpToggle={this.state.selectVisibleUpToggle}
+          selectVisibleDownToggle={this.state.selectVisibleDownToggle}
           style={{backgroundColor: 'lightgrey'}}
         />
         <ButtonBar>
-          <Button label="Up" type="Primary" onClick={this._selectUp} />
-          <Button label="Down" type="Primary" onClick={this._selectDown} />
+          <Button label="Up" type="Primary" onClick={this._selectVisibleUp} />
+          <Button label="Down" type="Primary" onClick={this._selectVisibleDown} />
         </ButtonBar>
         <Input onChangeText={this._setFilter} hintText="Filter" />
       </Box>

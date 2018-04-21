@@ -5,17 +5,26 @@ import {type StylesCrossPlatform} from '../../../../styles'
 
 type Props<RowProps> = {|
   rowPropsList: Array<RowProps>,
-  filter: string,
+
+  // Assumed to be constant.
   rowFilterer: (rowProps: RowProps, filter: string) => boolean,
-  selectedIndex: number,
-  style?: StylesCrossPlatform,
+
   rowRenderer: (index: number, selected: boolean, rowProps: RowProps) => React.Node,
+
+  filter: string,
+  selectedIndex: number,
+  selectVisibleUpToggle: boolean,
+  selectVisibleDownToggle: boolean,
+
+  style?: StylesCrossPlatform,
 |}
 
 type State<RowProps> = {|
   initial: boolean,
   filter: string,
   selectedIndex: number,
+  selectVisibleUpToggle: boolean,
+  selectVisibleDownToggle: boolean,
 
   visibleList: Array<RowProps>,
   indexToVisibleIndex: Array<number>,
@@ -29,6 +38,8 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       initial: true,
       filter: '',
       selectedIndex: 0,
+      selectVisibleUpToggle: false,
+      selectVisibleDownToggle: false,
 
       visibleList: [],
       indexToVisibleIndex: [],
@@ -65,6 +76,8 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       initial: false,
       filter: nextProps.filter,
       selectedIndex: nextProps.selectedIndex,
+      selectVisibleUpToggle: nextProps.selectVisibleUpToggle,
+      selectVisibleDownToggle: nextProps.selectVisibleDownToggle,
 
       visibleList,
       indexToVisibleIndex,
