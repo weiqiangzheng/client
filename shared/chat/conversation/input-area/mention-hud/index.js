@@ -54,7 +54,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     }
   }
 
-  static getDerivedStateFromProps = (
+  static getDerivedStateFromProps = <RowProps>(
     nextProps: Props<RowProps>,
     prevState: State<RowProps>
   ): null | State<RowProps> => {
@@ -150,4 +150,5 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
   }
 }
 
+export type {Props, State}
 export default MentionHud
