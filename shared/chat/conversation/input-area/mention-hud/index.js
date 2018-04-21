@@ -4,9 +4,8 @@ import {List} from '../../../../common-adapters/index'
 import {type StylesCrossPlatform} from '../../../../styles'
 
 type Props<RowProps> = {|
-  rowPropsList: Array<RowProps>,
-
   // Assumed to be constant.
+  rowPropsList: Array<RowProps>,
   rowFilterer: (rowProps: RowProps, filter: string) => boolean,
 
   rowRenderer: (index: number, selected: boolean, rowProps: RowProps) => React.Node,
@@ -20,12 +19,16 @@ type Props<RowProps> = {|
 |}
 
 type State<RowProps> = {|
+  // True only in the constructor.
   initial: boolean,
+
+  // Mirrored from props.
   filter: string,
   selectedIndex: number,
   selectVisibleUpToggle: boolean,
   selectVisibleDownToggle: boolean,
 
+  // Derived state.
   visibleList: Array<RowProps>,
   indexToVisibleIndex: Array<number>,
   visibleIndexToIndex: Array<number>,
