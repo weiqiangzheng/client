@@ -74,14 +74,16 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
       selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
     } else if (selectedIndex !== prevState.selectedIndex) {
       selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
-    } else if (nextProps.selectVisibleUpToggle !== prevState.selectVisibleUpToggle) {
-      if (visibleList.length > 0) {
-        selectedVisibleIndex = (selectedVisibleIndex + (visibleList.length - 1)) % visibleList.length
-      }
-    } else if (nextProps.selectVisibleDownToggle !== prevState.selectVisibleDownToggle) {
-      if (visibleList.length > 0) {
-        selectedVisibleIndex = (selectedVisibleIndex + 1) % visibleList.length
-      }
+    } else if (
+      nextProps.selectVisibleUpToggle !== prevState.selectVisibleUpToggle &&
+      visibleList.length > 0
+    ) {
+      selectedVisibleIndex = (selectedVisibleIndex + (visibleList.length - 1)) % visibleList.length
+    } else if (
+      nextProps.selectVisibleDownToggle !== prevState.selectVisibleDownToggle &&
+      visibleList.length > 0
+    ) {
+      selectedVisibleIndex = (selectedVisibleIndex + 1) % visibleList.length
     } else {
       // Nothing changed.
       return null
