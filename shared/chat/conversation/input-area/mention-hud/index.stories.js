@@ -35,7 +35,7 @@ class MentionHudContainer extends React.Component<{}, State> {
 
   render() {
     return (
-      <Box style={globalStyles.flexBoxColumn}>
+      <Box style={{...globalStyles.flexBoxColumn, height: 400, width: 240}}>
         <MentionHud
           data={['some data', 'some other data', 'third data']}
           filter={this.state.filter}
@@ -49,7 +49,7 @@ class MentionHudContainer extends React.Component<{}, State> {
             <Row key={index} index={index} selected={selected} {...rowProps} />
           )}
           selectedIndex={0}
-          style={{height: 300, width: 240, backgroundColor: 'lightgrey'}}
+          style={{backgroundColor: 'lightgrey'}}
         />
         <Input onChangeText={this._setFilter} hintText="Filter" />
       </Box>
