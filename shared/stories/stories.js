@@ -13,6 +13,7 @@ import chatCreateChannel from '../chat/create-channel/index.stories'
 import chatManageChannels from '../chat/manage-channels/index.stories'
 import chatChannelMentionHud from '../chat/conversation/input-area/channel-mention-hud/index.stories'
 import chatUserMentionHud from '../chat/conversation/input-area/user-mention-hud/index.stories'
+import chatMentionHud from '../chat/conversation/input-area/mention-hud/index.stories'
 import checkbox from '../common-adapters/checkbox.stories'
 import devices from '../devices/index.stories'
 import dropdown from '../common-adapters/dropdown.stories'
@@ -49,6 +50,7 @@ const stories = {
   // chatList,
   chatManageChannels,
   chatUserMentionHud,
+  chatMentionHud,
   checkbox,
   devices,
   dropdown,
