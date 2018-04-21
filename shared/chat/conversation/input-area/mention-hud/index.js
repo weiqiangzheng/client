@@ -80,7 +80,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
         }
         indexToVisibleIndex.push(Math.max(0, visibleList.length - 1))
       }
-      selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
+      selectedVisibleIndex = rowPropsList.length > 0 ? indexToVisibleIndex[selectedIndex] : 0
       if (debugLog) {
         const reason = prevState.initial
           ? 'initial'
@@ -94,7 +94,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
         debugLog(`${reason}: ${JSON.stringify(dump)}`)
       }
     } else if (selectedIndex !== prevState.selectedIndex) {
-      selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
+      selectedVisibleIndex = rowPropsList.length > 0 ? indexToVisibleIndex[selectedIndex] : 0
       if (debugLog) {
         debugLog(
           `selected index changed from ${

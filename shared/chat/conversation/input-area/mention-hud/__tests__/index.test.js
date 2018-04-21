@@ -9,7 +9,7 @@ type RowProps = {|
 
 describe('getDerivedStateFromProps', () => {
   const gdsfp = MentionHud.getDerivedStateFromProps
-  it('steady to saving', () => {
+  it('initial', () => {
     const prevState: State<RowProps> = {
       initial: true,
       filter: '',
@@ -34,7 +34,12 @@ describe('getDerivedStateFromProps', () => {
       selectVisibleDownToggle: false,
     }
 
+    const expectedState: State<RowProps> = {
+      ...prevState,
+      initial: false,
+    }
+
     const state = gdsfp(nextProps, prevState)
-    expect(state).toEqual(null)
+    expect(state).toEqual(expectedState)
   })
 })
