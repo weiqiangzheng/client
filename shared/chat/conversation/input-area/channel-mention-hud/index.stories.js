@@ -79,7 +79,7 @@ class MentionHudContainer2 extends React.Component<{}, State> {
     this.setState({filter})
   }
 
-  _onRowClick = (index: number) => {
+  _setSelectedIndex = (index: number) => {
     this.setState({selectedIndex: index})
   }
 
@@ -95,7 +95,7 @@ class MentionHudContainer2 extends React.Component<{}, State> {
           style={null}
           debugLog={action('debugLog')}
           onPickChannel={action('onPickChannel')}
-          setSelectedIndex={action('setSelectedIndex')}
+          setSelectedIndex={this._setSelectedIndex}
         />
         <ButtonBar>
           <Button label="Up" type="Primary" onClick={this._selectVisibleUp} />
