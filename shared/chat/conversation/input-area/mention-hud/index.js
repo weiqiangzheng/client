@@ -13,6 +13,7 @@ type Props<RowProps> = {|
 |}
 
 type State<RowProps> = {|
+  initial: boolean,
   filter: string,
   selectedIndex: number,
 
@@ -25,6 +26,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
   constructor(props: Props<RowProps>) {
     super(props)
     this.state = {
+      initial: true,
       filter: '',
       selectedIndex: 0,
 
@@ -39,7 +41,9 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     prevState: State<RowProps>
   ): null | State<RowProps> => {
     let {visibleIndexToIndex, filteredList, selectedVisibleIndex} = prevState
-    if (nextProps.filter !== prevState.filter) {
+    if (prevState.initial || nextProps.filter !== prevState.filter) {
+      visibleIndexToIndex = []
+      filteredList = []
       selectedVisibleIndex = 0
       for (let i = 0; i < nextProps.rowPropsList.length; i++) {
         const rowProps = nextProps.rowPropsList[i]
@@ -65,6 +69,7 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     }
 
     return {
+      initial: false,
       filter: nextProps.filter,
       selectedIndex: nextProps.selectedIndex,
 
