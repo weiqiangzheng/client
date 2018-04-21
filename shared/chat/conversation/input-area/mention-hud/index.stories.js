@@ -86,7 +86,7 @@ class MentionHudContainer extends React.Component<{}, State> {
 }
 
 const load = () => {
-  storiesOf('Chat/Mention Hud', module).add('Basic', () => <MentionHudContainer />)
+  storiesOf('Chat/Mention HUD', module).add('Basic', () => <MentionHudContainer />)
 }
 
 export default load
