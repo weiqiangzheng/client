@@ -3,28 +3,28 @@ import * as React from 'react'
 import {List} from '../../../../common-adapters/index'
 import {type StylesCrossPlatform} from '../../../../styles'
 
-type Props<RowData, RowProps> = {|
-  rowDataList: Array<RowData>,
+type Props<RowProps> = {|
+  rowPropsList: Array<RowProps>,
   filter: string,
-  rowFilterer: (rowDataList: Array<RowData>, filter: string) => Array<RowProps>,
+  rowFilterer: (rowProps: RowProps, filter: string) => boolean,
   selectedIndex: number,
   style?: StylesCrossPlatform,
   rowRenderer: (index: number, selected: boolean, rowProps: RowProps) => React.Node,
 |}
 
-const MentionHud = <RowData, RowProps>(props: Props<RowData, RowProps>) => {
-  const rowPropList = props.rowFilterer(props.rowDataList, props.filter)
-  if (rowPropList.length === 0) {
+const MentionHud = <RowProps>(props: Props<RowProps>) => {
+  const rowPropsList = props.rowPropsList.filter(rowProps => props.rowFilterer(rowProps, props.filter))
+  if (rowPropsList.length === 0) {
     return null
   }
 
   return (
     <List
-      items={rowPropList}
+      items={rowPropsList}
       renderItem={(index: number, rowProps: RowProps) => {
-        let selectedIndex = props.selectedIndex % rowPropList.length
+        let selectedIndex = props.selectedIndex % rowPropsList.length
         if (selectedIndex < 0) {
-          selectedIndex += rowPropList.length
+          selectedIndex += rowPropsList.length
         }
         return props.rowRenderer(index, index === selectedIndex, rowProps)
       }}

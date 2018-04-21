@@ -50,21 +50,16 @@ class MentionHudContainer extends React.Component<{}, State> {
     return (
       <Box style={{...globalStyles.flexBoxColumn, height: 400, width: 240}}>
         <MentionHud
-          rowDataList={['some data', 'some other data', 'third data']}
+          rowPropsList={['some data', 'some other data', 'third data']}
           filter={this.state.filter}
-          rowFilterer={(rowDataList, filter) =>
-            ['header']
-              .concat(rowDataList, 'footer')
-              .filter(s => s.indexOf(filter) >= 0)
-              .map(data => ({data}))
-          }
-          rowRenderer={(index, selected, rowProps) => (
+          rowFilterer={(data, filter) => data.indexOf(filter) >= 0}
+          rowRenderer={(index, selected, data) => (
             <Row
               key={index}
               index={index}
               selected={selected}
               onClick={() => this._onRowClick(index)}
-              {...rowProps}
+              data={data}
             />
           )}
           selectedIndex={this.state.selectedIndex}
