@@ -1,14 +1,14 @@
 // @flow
 import React from 'react'
 import MentionHud from '.'
-import {Box, Button, ButtonBar, Input, Text} from '../../../../common-adapters'
+import {Box, Button, ButtonBar, ClickableBox, Input, Text} from '../../../../common-adapters'
 import {storiesOf} from '../../../../stories/storybook'
 import {globalMargins, globalStyles} from '../../../../styles'
 
-const Row = (props: {index: number, selected: boolean, data: string}) => (
-  <Box
+const Row = (props: {index: number, selected: boolean, data: string, onClick: () => void}) => (
+  <ClickableBox
+    onClick={props.onClick}
     style={{
-      border: '1px solid black',
       paddingLeft: globalMargins.tiny,
       backgroundColor: props.selected ? 'grey' : 'white',
     }}
@@ -16,7 +16,7 @@ const Row = (props: {index: number, selected: boolean, data: string}) => (
     <Text type="Body">
       {props.index}: {props.data}
     </Text>
-  </Box>
+  </ClickableBox>
 )
 
 type State = {
@@ -42,6 +42,10 @@ class MentionHudContainer extends React.Component<{}, State> {
     this.setState({filter})
   }
 
+  _onRowClick = (index: number) => {
+    this.setState({selectedIndex: index})
+  }
+
   render() {
     return (
       <Box style={{...globalStyles.flexBoxColumn, height: 400, width: 240}}>
@@ -55,7 +59,13 @@ class MentionHudContainer extends React.Component<{}, State> {
               .map(data => ({data}))
           }
           rowRenderer={(index, selected, rowProps) => (
-            <Row key={index} index={index} selected={selected} {...rowProps} />
+            <Row
+              key={index}
+              index={index}
+              selected={selected}
+              onClick={() => this._onRowClick(index)}
+              {...rowProps}
+            />
           )}
           selectedIndex={this.state.selectedIndex}
           style={{backgroundColor: 'lightgrey'}}
