@@ -1,9 +1,9 @@
 // @flow
 import React from 'react'
 import MentionHud from '.'
-import {Box, Text} from '../../../../common-adapters'
+import {Box, Input, Text} from '../../../../common-adapters'
 import {storiesOf} from '../../../../stories/storybook'
-import {globalMargins} from '../../../../styles'
+import {globalMargins, globalStyles} from '../../../../styles'
 
 const Row = (props: {index: number, selected: boolean, data: string}) => (
   <Box
@@ -19,22 +19,46 @@ const Row = (props: {index: number, selected: boolean, data: string}) => (
   </Box>
 )
 
+type State = {
+  filter: string,
+}
+
+class MentionHudContainer extends React.Component<{}, State> {
+  constructor(props) {
+    super(props)
+    this.state = {filter: ''}
+  }
+
+  _setFilter = (filter: string) => {
+    this.setState({filter})
+  }
+
+  render() {
+    return (
+      <Box style={globalStyles.flexBoxColumn}>
+        <MentionHud
+          data={['some data', 'some other data', 'third data']}
+          filter={this.state.filter}
+          rowFilterer={(data, filter) =>
+            data
+              .filter(s => s.indexOf(filter) >= 0)
+              .concat(['footer'])
+              .map(data => ({data}))
+          }
+          rowRenderer={(index, selected, rowProps) => (
+            <Row key={index} index={index} selected={selected} {...rowProps} />
+          )}
+          selectedIndex={0}
+          style={{height: 300, width: 240, backgroundColor: 'lightgrey'}}
+        />
+        <Input onChangeText={this._setFilter} hintText="Filter" />
+      </Box>
+    )
+  }
+}
+
 const load = () => {
-  storiesOf('Chat/Mention Hud', module).add('Basic', () => (
-    <MentionHud
-      data={['some data', 'some other data', 'third data']}
-      filter="third"
-      rowFilterer={(data, filter) =>
-        data
-          .filter(s => s.indexOf(filter) >= 0)
-          .concat(['footer'])
-          .map(data => ({data}))
-      }
-      rowRenderer={(index, selected, rowProps) => <Row index={index} selected={selected} {...rowProps} />}
-      selectedIndex={0}
-      style={{height: 300, width: 240, backgroundColor: 'lightgrey'}}
-    />
-  ))
+  storiesOf('Chat/Mention Hud', module).add('Basic', () => <MentionHudContainer />)
 }
 
 export default load
