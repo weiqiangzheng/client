@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
 import {List} from '../../../../common-adapters/index'
-import {globalColors, globalStyles, collapseStyles, type StylesCrossPlatform} from '../../../../styles'
+import {type StylesCrossPlatform} from '../../../../styles'
 
 type Props<Item> = {|
   data: Array<Item>,
@@ -20,13 +20,8 @@ const MentionHud = <Item>(props: Props<Item>) =>
       selectedIndex={props.selectedIndex}
       fixedHeight={40}
       keyboardShouldPersistTaps="always"
-      style={collapseStyles([hudStyle, props.style])}
+      style={props.style}
     />
   ) : null
-
-const hudStyle = {
-  ...globalStyles.flexBoxColumn,
-  backgroundColor: globalColors.white,
-}
 
 export default MentionHud

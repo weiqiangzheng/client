@@ -25,7 +25,7 @@ const load = () => {
       data={['some data', 'some other data', 'third data']}
       rowRenderer={(index, selected, item) => <Row index={index} selected={selected} data={item} />}
       selectedIndex={0}
-      style={{height: 300, width: 240}}
+      style={{height: 300, width: 240, backgroundColor: 'lightgrey'}}
     />
   ))
 }
