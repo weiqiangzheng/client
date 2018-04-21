@@ -49,6 +49,64 @@ const UpDownFilterHoc = compose(
   )
 )
 
+type State = {
+  filter: string,
+  selectedIndex: number,
+  selectVisibleUpToggle: boolean,
+  selectVisibleDownToggle: boolean,
+}
+
+class MentionHudContainer2 extends React.Component<{}, State> {
+  constructor(props) {
+    super(props)
+    this.state = {
+      filter: '',
+      selectedIndex: 0,
+      selectVisibleUpToggle: false,
+      selectVisibleDownToggle: false,
+    }
+  }
+
+  _selectVisibleUp = () => {
+    this.setState(({selectVisibleUpToggle}) => ({selectVisibleUpToggle: !selectVisibleUpToggle}))
+  }
+
+  _selectVisibleDown = () => {
+    this.setState(({selectVisibleDownToggle}) => ({selectVisibleDownToggle: !selectVisibleDownToggle}))
+  }
+
+  _setFilter = (filter: string) => {
+    this.setState({filter})
+  }
+
+  _onRowClick = (index: number) => {
+    this.setState({selectedIndex: index})
+  }
+
+  render() {
+    return (
+      <Box style={{...globalStyles.flexBoxColumn, height: 250, width: 240}}>
+        <MentionHud2
+          channels={['foo', 'bar', 'baz']}
+          filter={this.state.filter}
+          selectedIndex={this.state.selectedIndex}
+          selectVisibleUpToggle={this.state.selectVisibleUpToggle}
+          selectVisibleDownToggle={this.state.selectVisibleDownToggle}
+          style={null}
+          debugLog={action('debugLog')}
+          onPickChannel={action('onPickChannel')}
+          setSelectedIndex={action('setSelectedIndex')}
+        />
+        <ButtonBar>
+          <Button label="Up" type="Primary" onClick={this._selectVisibleUp} />
+          <Button label="Down" type="Primary" onClick={this._selectVisibleDown} />
+        </ButtonBar>
+        <Input onChangeText={this._setFilter} hintText="Filter" />
+      </Box>
+    )
+  }
+}
+
 const load = () => {
   storiesOf('Chat/Channel Heads up Display', module)
     .addDecorator(provider)
@@ -94,24 +152,7 @@ const load = () => {
       ))
       return <Hud />
     })
-    .add('Mention Hud 2', () => {
-      const Hud = UpDownFilterHoc(({upCounter, downCounter, filter}) => (
-        <Box style={{...globalStyles.flexBoxColumn, height: 100, width: 240}}>
-          <MentionHud2
-            channels={['foo', 'bar', 'baz']}
-            filter={filter}
-            selectedIndex={0}
-            selectVisibleUpToggle={false}
-            selectVisibleDownToggle={false}
-            style={null}
-            debugLog={action('debugLog')}
-            onPickChannel={action('onPickChannel')}
-            setSelectedIndex={action('setSelectedIndex')}
-          />
-        </Box>
-      ))
-      return <Hud />
-    })
+    .add('Mention Hud 2', () => <MentionHudContainer2 />)
 }
 
 export default load
