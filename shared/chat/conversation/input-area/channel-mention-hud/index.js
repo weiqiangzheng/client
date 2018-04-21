@@ -143,8 +143,6 @@ const MentionHud = compose(
 
 const MentionHud2 = ({
   channels,
-  rowFilterer,
-  rowRenderer,
   filter,
   selectedIndex,
   selectVisibleUpToggle,

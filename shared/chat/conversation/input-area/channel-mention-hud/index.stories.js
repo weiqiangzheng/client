@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import * as I from 'immutable'
-import {MentionRowRenderer, MentionHud} from '.'
+import {MentionRowRenderer, MentionHud, MentionHud2} from '.'
 import {compose, withStateHandlers} from '../../../../util/container'
 import {Box, Button, Input, ButtonBar} from '../../../../common-adapters'
 import {createPropProvider, storiesOf, action} from '../../../../stories/storybook'
@@ -89,6 +89,24 @@ const load = () => {
             pickSelectedUserCounter={0}
             filter={filter}
             style={{flex: 1}}
+          />
+        </Box>
+      ))
+      return <Hud />
+    })
+    .add('Mention Hud 2', () => {
+      const Hud = UpDownFilterHoc(({upCounter, downCounter, filter}) => (
+        <Box style={{...globalStyles.flexBoxColumn, height: 100, width: 240}}>
+          <MentionHud2
+            channels={['foo', 'bar', 'baz']}
+            filter={filter}
+            selectedIndex={0}
+            selectVisibleUpToggle={false}
+            selectVisibleDownToggle={false}
+            style={null}
+            debugLog={action('debugLog')}
+            onPickChannel={action('onPickChannel')}
+            setSelectedIndex={action('setSelectedIndex')}
           />
         </Box>
       ))
