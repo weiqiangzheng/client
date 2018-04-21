@@ -16,6 +16,8 @@ type Props<RowProps> = {|
   selectVisibleDownToggle: boolean,
 
   style?: StylesCrossPlatform,
+
+  debugLog?: string => void,
 |}
 
 type State<RowProps> = {|
@@ -57,14 +59,21 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
     prevState: State<RowProps>
   ): null | State<RowProps> => {
     let {visibleList, indexToVisibleIndex, visibleIndexToIndex, selectedVisibleIndex} = prevState
-    let {selectedIndex} = nextProps
-    if (prevState.initial || nextProps.filter !== prevState.filter) {
+    const {
+      rowPropsList,
+      filter,
+      selectedIndex,
+      selectVisibleUpToggle,
+      selectVisibleDownToggle,
+      debugLog,
+    } = nextProps
+    if (prevState.initial || filter !== prevState.filter) {
       visibleList = []
       indexToVisibleIndex = []
       visibleIndexToIndex = []
-      for (let i = 0; i < nextProps.rowPropsList.length; i++) {
-        const rowProps = nextProps.rowPropsList[i]
-        const show = nextProps.rowFilterer(rowProps, nextProps.filter)
+      for (let i = 0; i < rowPropsList.length; i++) {
+        const rowProps = rowPropsList[i]
+        const show = nextProps.rowFilterer(rowProps, filter)
         if (show) {
           visibleList.push(rowProps)
           visibleIndexToIndex.push(i)
@@ -72,18 +81,37 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
         indexToVisibleIndex.push(Math.max(0, visibleList.length - 1))
       }
       selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
+      if (debugLog) {
+        const reason = prevState.initial
+          ? 'initial'
+          : `filter changed from "${prevState.filter}" to "${filter}"`
+        const dump = {
+          visibleList,
+          indexToVisibleIndex,
+          visibleIndexToIndex,
+          selectedVisibleIndex,
+        }
+        debugLog(`${reason}: ${JSON.stringify(dump)}`)
+      }
     } else if (selectedIndex !== prevState.selectedIndex) {
       selectedVisibleIndex = indexToVisibleIndex[selectedIndex]
-    } else if (
-      nextProps.selectVisibleUpToggle !== prevState.selectVisibleUpToggle &&
-      visibleList.length > 0
-    ) {
+      if (debugLog) {
+        debugLog(
+          `selected index changed from ${
+            prevState.selectedIndex
+          } to ${selectedIndex}: visible index is now ${selectedVisibleIndex}`
+        )
+      }
+    } else if (selectVisibleUpToggle !== prevState.selectVisibleUpToggle && visibleList.length > 0) {
       selectedVisibleIndex = (selectedVisibleIndex + (visibleList.length - 1)) % visibleList.length
-    } else if (
-      nextProps.selectVisibleDownToggle !== prevState.selectVisibleDownToggle &&
-      visibleList.length > 0
-    ) {
+      if (debugLog) {
+        debugLog(`select visible up toggled: visible index is now ${selectedVisibleIndex}`)
+      }
+    } else if (selectVisibleDownToggle !== prevState.selectVisibleDownToggle && visibleList.length > 0) {
       selectedVisibleIndex = (selectedVisibleIndex + 1) % visibleList.length
+      if (debugLog) {
+        debugLog(`select visible down toggled: visible index is now ${selectedVisibleIndex}`)
+      }
     } else {
       // Nothing changed.
       return null
@@ -91,10 +119,10 @@ class MentionHud<RowProps> extends React.Component<Props<RowProps>, State<RowPro
 
     return {
       initial: false,
-      filter: nextProps.filter,
+      filter,
       selectedIndex,
-      selectVisibleUpToggle: nextProps.selectVisibleUpToggle,
-      selectVisibleDownToggle: nextProps.selectVisibleDownToggle,
+      selectVisibleUpToggle,
+      selectVisibleDownToggle,
 
       visibleList,
       indexToVisibleIndex,

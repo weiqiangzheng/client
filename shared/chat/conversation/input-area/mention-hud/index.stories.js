@@ -2,7 +2,7 @@
 import React from 'react'
 import MentionHud from '.'
 import {Box, Button, ButtonBar, ClickableBox, Input, Text} from '../../../../common-adapters'
-import {storiesOf} from '../../../../stories/storybook'
+import {storiesOf, action} from '../../../../stories/storybook'
 import {globalMargins, globalStyles} from '../../../../styles'
 
 const Row = (props: {index: number, selected: boolean, data: string, onClick: () => void}) => (
@@ -73,6 +73,7 @@ class MentionHudContainer extends React.Component<{}, State> {
           selectVisibleUpToggle={this.state.selectVisibleUpToggle}
           selectVisibleDownToggle={this.state.selectVisibleDownToggle}
           style={{backgroundColor: 'lightgrey'}}
+          debugLog={action('debugLog')}
         />
         <ButtonBar>
           <Button label="Up" type="Primary" onClick={this._selectVisibleUp} />
