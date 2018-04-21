@@ -7,7 +7,7 @@ import {globalMargins} from '../../../../styles'
 
 const Row = (props: {index: number, data: string}) => (
   <Box style={{border: '1px solid black', paddingLeft: globalMargins.tiny}}>
-    <Text type="Body" style={{backgroundColor: 'white'}}>
+    <Text type="Body">
       {props.index}: {props.data}
     </Text>
   </Box>
