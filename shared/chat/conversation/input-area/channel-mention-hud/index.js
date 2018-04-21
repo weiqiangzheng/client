@@ -10,6 +10,7 @@ import {
 } from '../../../../util/container'
 import {Box, ClickableBox, List, Text} from '../../../../common-adapters/index'
 import {globalColors, globalMargins, globalStyles, isMobile, collapseStyles} from '../../../../styles'
+import {default as GenMentionHud} from '../mention-hud'
 
 type Props<D: {channelName: string, selected: boolean}> = {
   rowRenderer: (i: number, d: D) => React$Element<*>,
@@ -140,5 +141,41 @@ const MentionHud = compose(
   }))
 )(Hud)
 
-export {MentionRowRenderer, MentionHud}
+const MentionHud2 = ({
+  channels,
+  rowFilterer,
+  rowRenderer,
+  filter,
+  selectedIndex,
+  selectVisibleUpToggle,
+  selectVisibleDownToggle,
+  style,
+  debugLog,
+  onPickChannel,
+  setSelectedIndex,
+}: *) => {
+  const fullList = channels ? channels.slice().sort() : []
+  return (
+    <GenMentionHud
+      rowPropsList={fullList}
+      rowFilterer={(channel, filter) => channel.toLowerCase().indexOf(filter) >= 0}
+      rowRenderer={(index, selected, data) => (
+        <MentionRowRenderer
+          channelName={data}
+          selected={selected}
+          onClick={() => onPickChannel(data)}
+          onHover={() => setSelectedIndex(index)}
+        />
+      )}
+      filter={filter}
+      selectedIndex={selectedIndex}
+      selectVisibleUpToggle={selectVisibleUpToggle}
+      selectVisibleDownToggle={selectVisibleDownToggle}
+      style={style}
+      debugLog={debugLog}
+    />
+  )
+}
+
+export {MentionRowRenderer, MentionHud, MentionHud2}
 export default Hud
