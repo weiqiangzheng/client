@@ -23,7 +23,14 @@ const load = () => {
   storiesOf('Chat/Mention Hud', module).add('Basic', () => (
     <MentionHud
       data={['some data', 'some other data', 'third data']}
-      rowRenderer={(index, selected, item) => <Row index={index} selected={selected} data={item} />}
+      filter="third"
+      rowFilterer={(data, filter) =>
+        data
+          .filter(s => s.indexOf(filter) >= 0)
+          .concat(['footer'])
+          .map(data => ({data}))
+      }
+      rowRenderer={(index, selected, rowProps) => <Row index={index} selected={selected} {...rowProps} />}
       selectedIndex={0}
       style={{height: 300, width: 240, backgroundColor: 'lightgrey'}}
     />
