@@ -96,4 +96,51 @@ describe('getDerivedStateFromProps', () => {
     const state = gdsfp(nextProps, initialState)
     expect(state).toEqual(expectedState)
   })
+
+  it('change selectedIndex 1', () => {
+    const prevState = {
+      ...initialState,
+      initial: false,
+
+      filter: 'b',
+      visibleList: rowPropsList.slice(1),
+      indexToVisibleIndex: [0, 0, 1],
+      visibleIndexToIndex: [1, 2],
+    }
+
+    {
+      const nextProps = {
+        ...initialProps,
+        rowPropsList,
+        filter: prevState.filter,
+        selectedIndex: 1,
+      }
+
+      const expectedState: State<RowProps> = {
+        ...prevState,
+        selectedIndex: 1,
+      }
+
+      const state = gdsfp(nextProps, initialState)
+      expect(state).toEqual(expectedState)
+    }
+
+    {
+      const nextProps = {
+        ...initialProps,
+        rowPropsList,
+        filter: prevState.filter,
+        selectedIndex: 2,
+      }
+
+      const expectedState: State<RowProps> = {
+        ...prevState,
+        selectedIndex: 2,
+        selectedVisibleIndex: 1,
+      }
+
+      const state = gdsfp(nextProps, initialState)
+      expect(state).toEqual(expectedState)
+    }
+  })
 })
