@@ -305,6 +305,31 @@ function platformSpecificIntentEffect(
   }
 }
 
+const pickAndUpload = ({payload: {type}}: FsGen.PickAndUploadPayload) =>
+  new Promise((resolve, reject) =>
+    // TODO: Figure out how to make this modal and fix flow.
+    SafeElectron.getDialog().showOpenDialog(
+      // $FlowFixMe
+      {
+        title: 'Select a file or folder to upload',
+        properties: [
+          'multiSelections',
+          ...(['file', 'both'].includes(type) ? ['openFile'] : []),
+          ...(['directory', 'both'].includes(type) ? ['openDirectory'] : []),
+        ],
+      },
+      filePaths => resolve(filePaths)
+    )
+  )
+
+const pickAndUploadSuccess = (localPaths, action: FsGen.PickAndUploadPayload) =>
+  localPaths &&
+  Saga.sequentially(
+    localPaths.map(localPath =>
+      Saga.put(FsGen.createUpload({localPath, parentPath: action.payload.parentPath}))
+    )
+  )
+
 function* platformSpecificSaga(): Saga.SagaGenerator<any, any> {
   yield Saga.safeTakeEveryPure(FsGen.openInFileUI, openInFileUISaga)
   yield Saga.safeTakeEvery(FsGen.fuseStatus, fuseStatusSaga)
@@ -312,6 +337,7 @@ function* platformSpecificSaga(): Saga.SagaGenerator<any, any> {
   yield Saga.safeTakeEveryPure(FsGen.installKBFS, installKBFS, installKBFSSuccess)
   yield Saga.safeTakeEveryPure(FsGen.uninstallKBFSConfirm, uninstallKBFSConfirmSaga)
   yield Saga.safeTakeEveryPure(FsGen.uninstallKBFS, uninstallKBFS, uninstallKBFSSuccess)
+  yield Saga.safeTakeEveryPure(FsGen.pickAndUpload, pickAndUpload, pickAndUploadSuccess)
   if (isWindows) {
     yield Saga.safeTakeEveryPure(FsGen.installFuse, installDokanSaga)
   } else {
