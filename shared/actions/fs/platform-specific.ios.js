@@ -6,7 +6,7 @@ import {share, save, pickAndUpload, pickAndUploadSuccess} from './common.native'
 import {saveAttachmentDialog, showShareActionSheet} from '../platform-specific'
 
 function platformSpecificIntentEffect(
-  intent: Types.TransferIntent,
+  intent: Types.DownloadIntent,
   localPath: string,
   mimeType: string
 ): ?Saga.Effect {

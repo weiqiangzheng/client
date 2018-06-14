@@ -67,7 +67,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
             navigateAppend([
               {
                 props: {path, isShare: true},
-                selected: 'transferPopup',
+                selected: 'downloadPopup',
               },
             ])
           )
@@ -87,7 +87,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
             navigateAppend([
               {
                 props: {path, isShare: true},
-                selected: 'transferPopup',
+                selected: 'downloadPopup',
               },
             ])
           )
